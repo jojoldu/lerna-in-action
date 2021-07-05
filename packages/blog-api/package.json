@@ -1,0 +1,19 @@
+{
+  "name": "blog-api",
+  "version": "1.0.0",
+  "description": "> TODO: description",
+  "author": "jojoldu <jojoldu@gmail.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/blog-api.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  }
+}
