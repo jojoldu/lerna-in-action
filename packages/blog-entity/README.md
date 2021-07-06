@@ -1,11 +1,11 @@
-# `blog-core`
+# `blog-entity`
 
 > TODO: description
 
 ## Usage
 
 ```
-const blogCore = require('blog-core');
+const blogEntity = require('blog-entity');
 
 // TODO: DEMONSTRATE API
 ```

@@ -2,6 +2,6 @@
 
 const blogCore = require('..');
 
-describe('blog-core', () => {
+describe('blog-entity', () => {
     it('needs tests');
 });
