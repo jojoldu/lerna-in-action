@@ -1,11 +1,11 @@
-# `blog-api`
+# `blog-log`
 
 > TODO: description
 
 ## Usage
 
 ```
-const blogApi = require('blog-api');
+const blogLog = require('blog-log');
 
 // TODO: DEMONSTRATE API
 ```

@@ -1,4 +1,24 @@
-# Lerna In Action
+# Lerna로 Mono Repo (Typescript & Jest) 환경 구성하기 
+
+```bash
+lerna init -i 
+```
+
+**root/lerna.json**
+
+```json
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "npmClient": "yarn",
+  "useWorkspaces": true
+}
+```
+
+우리는 version 정책을 독립 모드로 가져가기 때문에 version: "independent"로 지정한 것이고,
+yarn을 사용할 것이기 때문에 npmClient: "yarn" 그리고 yarn workspace 사용을 위해 useWorkspaces: true로 지정하였다.
 
 * `lerna.json`
     * lerna 설정
@@ -7,7 +27,26 @@
     * 프로젝트 전체를 대상으로 하는 `script`
 * `packages`
     * 수동 / `lerna create 패키지명` 으로 자동생성 모두 가능
-    
+
+**root/package.json**
+
+```json
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}
+```    
+
+```bash
+lerna create blog-log
+lerna create blog-base
+```
 
 ## Yarn workspaces
 
