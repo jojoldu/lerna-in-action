@@ -1,11 +1,11 @@
 {
-  "name": "blog-entity",
+  "name": "blog-log",
   "version": "1.0.0",
   "description": "> TODO: description",
   "author": "jojoldu <jojoldu@gmail.com>",
-  "homepage": "",
+  "homepage": "https://github.com/jojoldu/lerna-in-action#readme",
   "license": "ISC",
-  "main": "",
+  "main": "src/blog-log.js",
   "directories": {
     "lib": "src",
     "test": "test"
@@ -13,14 +13,14 @@
   "files": [
     "src"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jojoldu/lerna-in-action.git"
+  },
   "scripts": {
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
-  "dependencies": {
-    "pg": "^8.6.0",
-    "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.2.34",
-    "typeorm-naming-strategies": "^2.0.0",
-    "typeorm-typedi-extensions": "^0.4.1"
+  "bugs": {
+    "url": "https://github.com/jojoldu/lerna-in-action/issues"
   }
 }
