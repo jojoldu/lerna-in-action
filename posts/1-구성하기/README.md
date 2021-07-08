@@ -44,8 +44,8 @@ yarn을 사용할 것이기 때문에 npmClient: "yarn" 그리고 yarn workspace
 ```    
 
 ```bash
-lerna create blog-log
-lerna create blog-base
+lerna create order-log
+lerna create order-base
 ```
 
 ## Yarn workspaces
@@ -80,12 +80,18 @@ yarn add @types/jest jest @types/jest typescript --dev --ignore-workspace-root-c
 ### 개별 의존성 설치
 
 ```bash
-lerna add express --scope=blog-api
+lerna add express --scope=order-log
 ```
 
 혹은 직접 모듈로 가서 설치
 
 ```bash
-cd blog-entity
-lerna add express --scope=blog-api
+cd order-base
+lerna add express --scope=order-log
+```
+
+### 패키지별 의존성
+
+```bash
+lerna add order-base --scope=order-log
 ```

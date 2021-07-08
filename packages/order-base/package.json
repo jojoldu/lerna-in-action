@@ -1,11 +1,11 @@
 {
-  "name": "blog-log",
+  "name": "order-base",
   "version": "1.0.0",
   "description": "> TODO: description",
   "author": "jojoldu <jojoldu@gmail.com>",
   "homepage": "https://github.com/jojoldu/lerna-in-action#readme",
   "license": "ISC",
-  "main": "src/blog-log.js",
+  "main": "",
   "directories": {
     "lib": "src",
     "test": "test"
@@ -22,5 +22,8 @@
   },
   "bugs": {
     "url": "https://github.com/jojoldu/lerna-in-action/issues"
+  },
+  "dependencies": {
+    "ts-node": "^10.0.0"
   }
 }

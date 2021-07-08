@@ -1,5 +1,5 @@
 {
-  "name": "blog-base",
+  "name": "order-log",
   "version": "1.0.0",
   "description": "> TODO: description",
   "author": "jojoldu <jojoldu@gmail.com>",
@@ -23,11 +23,8 @@
   "bugs": {
     "url": "https://github.com/jojoldu/lerna-in-action/issues"
   },
-  "devDependencies": {
-    "@types/jest": "^26.0.24",
-    "@types/node": "^16.0.0",
-    "jest": "^27.0.6",
-    "ts-jest": "^27.0.3",
-    "typescript": "^4.3.5"
+  "dependencies": {
+    "order-base": "1.0.0",
+    "ts-node": "^10.0.0"
   }
 }

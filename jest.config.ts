@@ -5,9 +5,6 @@ module.exports = {
     ],
     testMatch: [
         '<rootDir>/test/**/*.test.ts',
-        '<rootDir>/test/unit/**/*.test.ts',
-        '<rootDir>/test/config/**/*.test.ts',
-        '<rootDir>/test/integration/**/*.test.ts',
     ],
     transform: {
         '^.+\\.(t|j)s$': 'ts-jest',
@@ -20,6 +17,5 @@ module.exports = {
         '!src/**/entity/**',
         '!src/**/exception/**',
     ],
-    coverageDirectory: 'coverage',
-    testEnvironment: 'node'
+    coverageDirectory: 'coverage'
 };
