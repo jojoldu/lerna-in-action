@@ -24,7 +24,8 @@
     "url": "https://github.com/jojoldu/lerna-in-action/issues"
   },
   "dependencies": {
+    "chalk": "^4.1.1",
     "order-base": "1.0.0",
-    "ts-node": "^10.0.0"
+    "winston": "^3.3.3"
   }
 }
