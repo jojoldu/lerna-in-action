@@ -1,7 +1,7 @@
 import {Order} from "order-base/src/Order";
 import {Message} from "../src/Message";
 
-describe('Logger', () => {
+describe('Message', () => {
     it('주문 접수 메세지', () => {
         const order = Order.accept('AXDA01', 1000, 'kakaopay');
 

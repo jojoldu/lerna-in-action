@@ -1,4 +1,4 @@
-# Lerna로 Mono Repo (Typescript & Jest) 환경 구성하기 
+# Lerna와 yarn-workspace를 활용한 Mono Repo (Typescript & Jest) 환경 구성하기 
 
 보통 하나의 도메인 시스템을 운영할때 프로젝트 하나만으로는 해결이 안될 때가 많습니다.  
   
@@ -16,26 +16,43 @@
 * 주문 API
 * 주문 배치
 
-이 3개는 배포되는 서버도 다르고 다른 코드 베이스를 가지고 있는데요.  
-하지만 이들이 공통적으로 필요로 하는 Order Entity는 어떻게 관리해야할까요?  
+이 3개는 **주문시스템**을 이루는 프로젝트들입니다.  
+배포되는 서버도 다르고 다른 코드 베이스를 가지고 있는데요.  
+하지만 이들이 공통적으로 필요로 하는 **Order Entity는 어떻게 관리해야할까요**?  
 
 * npm 저장소에 올려서 사용하기에는 **실시간성이 떨어집니다**
-* 모든 하위 프로젝트들이 동일한 파일을 복사해서 관리하는건 유지보수가 굉장히 힘듭니다.  
+* 모든 하위 프로젝트들이 **동일한 파일을 복사**해서 관리하는건 **유지보수가 굉장히 힘듭니다**.  
 
-
-
-
-보통 이를 Mono Repo (Multiple Packages OR [Multi Module](https://jojoldu.tistory.com/123))
-
-![lerna](images/lerna.png)
+그래서 이런 문제를 해결하기 위해 여러 생태계에서 방법들을 고민하는데요.  
+대표적인 사례로 Mono Repo (Multiple Packages 혹은 [Multi Module](https://jojoldu.tistory.com/123)) 가 있습니다.
 
 * Mono Repo는 **우리 회사 프로젝트 전체를 하나의 저장소로 올리는 것을 의미하진 않습니다**.
   * 도메인별로 Mono Repo를 유지해야 함을 의미합니다.
 * 사내 전체에서 사용되는 config / 유틸 JS 파일등은 당연히 **별도의 저장소**를 사용해야 합니다.
 
+NodeJS에서 Mono Repo를 관리하는 가장 대표적인 방법으로 Lerna & Yarn Workspace 조합이 있습니다.
+
+![lerna](images/lerna.png)
+
+* `lerna`는 각 패키지들을 배포하고 버전관리하는 역할을 합니다.
+* `yarn`은 각 패키지간의 의존성 관리 하는 역할을 합니다.
+
+lerna로도 패키지간 의존성을 관리할 수 있지만, **lerna로 패키지 의존성을 관리할때 이슈**가 있기 때문에 각 도구가 서로 잘하는 역할만 하도록 설정을 합니다.
+
+> 패키지 의존성 관리는 lerna보다 yarn이 좋은 상세한 이유는 [lerna? yarn workspace? 크게 개념만 잡아보기](https://simsimjae.medium.com/monorepo-lerna-yarn-workspace-%ED%81%AC%EA%B2%8C-%EA%B0%9C%EB%85%90%EB%A7%8C-%EC%9E%A1%EC%95%84%EB%B3%B4%EA%B8%B0-c58bc4ba31fe) 을 보시면 좋습니다.
+
+자 그럼 한번 이제 간단한 프로젝트를 구성하면서 `lerna`과 `yarn workspace` 조합을 배워보겠습니다.
+
+## 1. 설치
+
 ```bash
-lerna init -i 
+npm install -g lerna
 ```
+
+```bash
+lerna init -i
+```
+
 
 **root/lerna.json**
 
