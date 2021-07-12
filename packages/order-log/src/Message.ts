@@ -12,8 +12,8 @@ export class Message {
         return `${order.name} 주문이 취소되었습니다.`;
     }
 
-    static messageWithTime(order: Order) {
-        const updatedAt = dayjs(order.updatedAt);
-        return `${updatedAt} ${order.name} 주문이 취소되었습니다`;
-    }
+    // static messageWithTime(order: Order) {
+    //     const updatedAt = dayjs(order.updatedAt);
+    //     return `${updatedAt} ${order.name} 주문이 취소되었습니다`;
+    // }
 }

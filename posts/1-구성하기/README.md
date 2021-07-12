@@ -152,7 +152,8 @@ lerna create order-log
 lerna create order-base
 ```
 
-그럼 `packages` 하위에 `order-base`와 `order-log` 2개의 프로젝트가 추가됩니다.
+그럼 `packages` 하위에 `order-base`와 `order-log` 2개의 프로젝트가 추가됩니다.  
+
 
 ### 2-1. 공통 의존성 설치
 
@@ -187,6 +188,8 @@ yarn workspace order-log add chalk --dev
   "order-base": "1.0.0",
 }
 ```
+
+## 3. 테스트
 
 
 
