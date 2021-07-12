@@ -154,10 +154,19 @@ lerna create order-base
 
 그럼 `packages` 하위에 `order-base`와 `order-log` 2개의 프로젝트가 추가됩니다.  
 
+![lerna-module](./images/lerna-module.png)
+
+그럼 이제 의존성 추가하는 방법을 하나씩 해보겠습니다.
 
 ### 2-1. 공통 의존성 설치
 
-공통으로 사용될 모듈로 eslint를 설치해보자
+공통 의존성이라 하면 **root** 에 등록될 패키지들을 의미합니다.  
+  
+테스트로 한번 적용해보겠습니다.  
+프로젝트 전체에 TS 스택이 사용될 예정이니 TS 스택을 아래와 같이 실행합니다.  
+실행 위치는 **root** 입니다.
+
+**root**
 
 ```bash
 yarn add @types/jest jest @types/node ts-jest ts-node typescript --dev --ignore-workspace-root-check
@@ -165,9 +174,36 @@ yarn add @types/jest jest @types/node ts-jest ts-node typescript --dev --ignore-
 
 * `yarn workspace` 를 사용하게 되면 기본적으로 패키지안에 모듈을 설치하는 것으로 간주하므로 `workspace-root-check` 를 무시하고 설치해줍니다.
 
+이렇게할 경우 **root/package.json**에는 아래와 같이 의존성이 추가됩니다.
+
+```json
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.0.1",
+    "jest": "^27.0.6",
+    "lerna": "^4.0.0",
+    "ts-jest": "^27.0.3",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
+  }
+}
+```
+
 ### 2-2. 개별 의존성 설치
 
-외부 패키지 등록
+만약 개별 모듈에서 각각 외부 패키지 등록이 필요하다면 다음과 같이 등록할 수 있습니다.
+
+```bash
+yarn workspace 모듈명 add 패키지명 [--dev]
+```
+
+이를테면 `order-log` 모듈에 `chalk` 패키지를 `dev`로 등록한다면 다음과 같습니다.
 
 ```bash
 yarn workspace order-log add chalk --dev 
@@ -179,7 +215,7 @@ yarn workspace order-log add chalk --dev
 
 ### 2-3. 로컬 패키지 등록
 
-(제가 못찾아서 그렇겠지만) 특별히 명령어가 아닌 바로 `package.json` 에 추가하면 됩니다.
+(제가 못찾아서 그렇겠지만) 내부 (로컬) 패키지를 의존성을 등록하는 방법은 바로 `package.json` 에 추가하면 됩니다.
 
 **order-log/package.json**
 
@@ -189,9 +225,206 @@ yarn workspace order-log add chalk --dev
 }
 ```
 
+### 2-4. 패키지 의존성 상속
+
+Gradle Mutli Module을 사용하시는 분들이라면 의존성 상속에 대해서 당연하게 생각하실텐데요.  
+(제가 검색해본 내에서는) Lerna / yarn workspace 에서는 의존성 상속이 안됩니다.  
+  
+즉, Entity 모듈 (상위) 이 TypeORM을 갖고 있다고 해서 이를 의존 있는 하위 모듈 (web / api / admin 등) 들이 **자동으로 TypeORM을 가지고 있을 순 없다**는 것입니다.
+
+예를 들어, `order-base`에 `dayjs`를 의존성을 추가했다고 해서
+
+![dependency1](./images/dependency1.png)
+
+하위 모듈인 `order-log`가 `dayjs`를 사용할 수는 없다는 것이죠.
+
+![dependency2](./images/dependency2.png)
+
+개인적으로는 모노레포가 활성화된 Gradle 환경에서 하다보면 **좀 더 세밀하게 의존성 관리를 해야하는데 그러지 못하다는 점**이 굉장히 아쉽습니다.  
+(All or One 느낌이랄까요?)
+
+> 이거 아시는 분 계시면 공유 부탁드립니다!
+
 ## 3. 테스트
 
+이렇게 만들어진 `order-base`와 `order-log` 프로젝트들을 테스트해보겠습니다.
 
+### 3-1. order-base 테스트
+
+order-base 프로젝트는 Order Entity 객체를 하나 만들어둡니다.  
+  
+**order-base/src/Order.ts**
+
+```javascript
+export class Order {
+    name: string;
+    amount: number;
+    payType: string;
+    status: string;
+    updatedAt: Date;
+
+    constructor() {
+    }
+
+    static accept (name, amount, payType) {
+        return Order.acceptWithNow(name, amount, payType, new Date());
+    }
+
+    static acceptWithNow (name, amount, payType, now) {
+        const order = new Order();
+        order.name = name;
+        order.amount = amount;
+        order.payType = payType;
+        order.status = 'accept';
+        order.updatedAt = now;
+
+        return order;
+    }
+
+    createCancel() {
+        return this.createCancelWithNow(new Date());
+    }
+
+    createCancelWithNow(now) {
+        const cancelOrder = new Order();
+        cancelOrder.name = this.name;
+        cancelOrder.amount = this.amount * -1
+        cancelOrder.payType = this.payType;
+        cancelOrder.status = 'cancel';
+        cancelOrder.updatedAt = now;
+
+        return cancelOrder;
+    }
+}
+```
+
+그리고 이를 테스트할 테스트 코드를 작성해봅니다.  
+  
+**order-base/test/Order.test.ts**
+
+```javascript
+import {Order} from "../src/Order";
+
+describe('Order', () => {
+    it('생성시 updatedAt = 생성시간, status = accept로 할당된다', () => {
+        const now = new Date ('2021-07-08');
+
+        const order = Order.acceptWithNow('name', 1000, 'kakaopay', now);
+
+        expect(order.updatedAt).toBe(now);
+        expect(order.status).toBe('accept');
+    });
+
+    it('취소시 현재 금액이 반대로, status = cancel로 할당된다', () => {
+        const now = new Date ('2021-07-08');
+        const amount = 1000;
+        const order = Order.acceptWithNow('name', amount, 'kakaopay', now);
+
+        const cancel = order.createCancel();
+
+        expect(cancel.amount).toBe(amount * -1);
+        expect(cancel.status).toBe('cancel');
+    });
+});
+```
+
+테스트를 실행하기 위해 `jest` 명령어를 등록합니다.  
+  
+**order-base/package.json**
+
+```json
+"scripts": {
+  "test": "jest"
+},
+```
+
+그리고 위 테스트를 실행해보면?
+
+![order-base-test](./images/order-base-test.png)
+
+테스트가 성공함을 볼 수 있습니다.
+
+### 3-2. order-log 테스트
+
+자 그럼 다음으로는 하위 모듈인 `order-log`를 테스트 해보겠습니다.  
+  
+먼저 마찬가지로 `package.json`에 `jest`를 추가합니다.  
+  
+**order-log/package.json**
+
+```json
+"scripts": {
+  "test": "jest"
+},
+```
+
+테스트할 코드와 테스트 코드를 추가합니다.  
+  
+**order-log/src/Message.ts**
+
+```javascript
+import {Order} from "order-base/src/Order";
+
+export class Message {
+
+    static messageAccept (order: Order) {
+        return `${order.name} (총: ${order.amount}원) 주문이 접수되었습니다.`;
+    }
+
+    static messageCancel (order: Order) {
+        return `${order.name} 주문이 취소되었습니다.`;
+    }
+}
+```
+
+**order-log/test/Message.test.ts**
+
+```javascript
+import {Order} from "order-base/src/Order";
+import {Message} from "../src/Message";
+
+describe('Message', () => {
+    it('주문 접수 메세지', () => {
+        const order = Order.accept('AXDA01', 1000, 'kakaopay');
+
+        const message = Message.messageAccept(order);
+
+        expect(message).toBe('AXDA01 (총: 1000원) 주문이 접수되었습니다.');
+    });
+});
+```
+
+그리고 이 테스트를 수행해보면?
+
+![order-log-test](./images/order-log-test.png)
+
+**상위 모듈을 의존하고 있는 하위 모듈도 정상 작동**하는 것을 확인할 수 있습니다.
+
+### 3-3. 전체 테스트
+
+마지막으로 이렇게 작성된 테스트들을 전체 수행해보겠습니다.  
+  
+이때는 `lerna`의 스크립트를 사용하면 편한데요.  
+우리는 `lerna test`를 사용해서 **전체 테스트 수행**을 하겠습니다.  
+  
+**root/package.json**
+
+```json
+"scripts": {
+  "test": "lerna run test"
+},
+```
+
+그리고 이제 `yarn test`로 전체 테스트를 수행해보면?
+
+![lerna-test](./images/lerna-test.png)
+
+모든 테스트가 차례로 수행되어 성공함을 확인할 수 있습니다.
+
+## 4. 마무리
+
+이번 시간에는 간단하게 lerna + yarn workspace로 모노레포를 구성하는 방법을 배워보았는데요.  
+다음 시간에는 본격 실전에 맞게 `express` 와 `typeORM` 등의 환경에서 모노레포 구성하는 방법을 배워보겠습니다.
 
 ## 참고
 
