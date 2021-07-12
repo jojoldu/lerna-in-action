@@ -26,6 +26,6 @@
   "dependencies": {
     "chalk": "^4.1.1",
     "order-base": "1.0.0",
-    "winston": "^3.3.3"
+    "ts-lodash": "^4.0.11"
   }
 }
